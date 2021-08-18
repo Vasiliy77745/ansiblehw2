@@ -1,0 +1,75 @@
+- name: Install awscli for server
+  hosts: my_first_server
+  become: yes
+  remote_user: es2-user
+  become_user: root
+
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    bucket_name: aavawsbucket
+
+  #pre task
+  # 
+  tasks:
+    - include_role: 
+        name: update_packages
+    - include_role:
+        name: install_packages
+    - include_role:
+        name: create_file  
+    #- name: Create file
+     # file:
+      #  path: ./awscli_installed
+       # state: touch
+        
+    - name: 
+      #shell: aws s3 cp ~/awscli_installed s3://aavawsbucket
+      amazon.aws.aws_s3:
+        #bucket: aavawsbucket
+        bucket: "{{ bucket_name }}"
+        object: /awscli_installed
+        src: ./awscli_installed
+        mode: put  
+- name: Create file on second server
+  hosts: my_second_server
+  become: yes
+  remote_user: ec2-user
+  become_user: root
+  
+  tasks: 
+    #- name: copy script
+     # copy:
+      #  src: ./second_play_execution.sh
+       # dest: ~/second_play_execution.sh
+        #mode: '0755'
+    #- name: exec script
+     # script: ./second_play_execution.sh
+    - include_role:
+        name: create_script
+    - include_role:
+        name: create_file             
+   
+- name: install CloudWatch
+  hosts: servers_ALL
+  become: yes
+  remote_user: es2-user
+  become_user: root
+  
+  tasks:
+    - name: installing CloudWatch
+      yum: 
+       name: amazon-cloudwatch-agent 
+       state: latest
+      notify: Start CloudWatch
+    
+  handlers:
+    - name: Start CloudWatch
+      service: 
+        name: amazon-cloudwatch-agent 
+        state: started
+
+  
+  
+  
+  
+  

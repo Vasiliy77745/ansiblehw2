@@ -1,0 +1,4 @@
+- name: Start CloudWatch
+  service: 
+    name: amazon-cloudwatch-agent 
+    state: started

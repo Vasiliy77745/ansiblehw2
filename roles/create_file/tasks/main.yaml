@@ -1,0 +1,5 @@
+---
+- name: Creation file
+  file:
+    path: /tmp/{{ inventory_hostname }}-file.txt
+    state: touch

@@ -1,0 +1,6 @@
+---
+- name: Create script
+  template:
+    src: script.sh.j2
+    dest: /usr/local/bin/script.sh
+    mode: "0755"
