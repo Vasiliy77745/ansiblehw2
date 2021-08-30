@@ -1,14 +1,15 @@
+---
 - name: Install awscli for server
   hosts: my_first_server
   become: yes
-  remote_user: es2-user
+  remote_user: ec2-user
   become_user: root
 
   vars:
     ansible_python_interpreter: /usr/bin/python3
     bucket_name: aavawsbucket
 
-  #pre task
+
   # 
   tasks:
     - include_role: 
@@ -30,6 +31,7 @@
         object: /awscli_installed
         src: ./awscli_installed
         mode: put  
+        
 - name: Create file on second server
   hosts: my_second_server
   become: yes
@@ -52,7 +54,7 @@
 - name: install CloudWatch
   hosts: servers_ALL
   become: yes
-  remote_user: es2-user
+  remote_user: ec2-user
   become_user: root
   
   tasks:
